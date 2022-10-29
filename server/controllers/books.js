@@ -1,4 +1,5 @@
 // define the book model
+import books from '../models/books.js';
 import booksModel from '../models/books.js';
 
 /* GET books List page. READ */
@@ -65,37 +66,33 @@ export function displayEditPage(req, res, next) {
              res.end(err);
          }
  
-         res.render('index', { title: 'Edit Books', page: 'books/edit', book: book });
+         res.render('index', { title: 'Edit Books', page: 'books/edit', book: books });
      });  
 
 }
 
 // POST - process the information passed from the details form and update the document
 export function processEditPage(req, res, next) {
-    /*****************
-    * ADD CODE HERE *
-    *****************/
-     let id = req.params.id;
-    
-     let newBook = booksModel({
-        _id: req.body.id,
+    //processes the update request of an existing book by using its id property
+    let id = req.params.id;
+
+    let newBook = booksModel({
+        _id: id,
         name: req.body.name,
         author: req.body.author,
         published: req.body.published,
         description: req.body.description,
         price: req.body.price
-     });
- 
-     booksModel.updateOne({_id: id }, newBook, (err, Book) => {
-         if(err){
-             console.error(err);
-             res.end(err);
-         };
- 
-         res.redirect('/books/list')
-     } )
+    });
 
-
+    booksModel.updateOne({_id: id}, newBook, (err, Book) => { 
+        if(err) {
+            console.error(err);
+            res.end(err);
+        };
+        //redirect back to list page
+        res.redirect('/books/list');
+    })
 }
 
 // GET - process the delete by user id
